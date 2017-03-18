@@ -7,26 +7,20 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_Cam_Loitor(NULL),
+    m_Cam_Loitor(new CAMERA_LOITOR),
     m_Show(NULL),
-    m_left_buff(NULL),
-    m_right_buff(NULL),
+    m_simgforshow(NULL),
     m_BufferSize(1)
 {
     m_grabSpace = new QSemaphore(m_BufferSize);
     m_showSpace = new QSemaphore(0);
 
-    m_Cam_Loitor = new CAMERA_LOITOR(this);
-    m_Width = m_Cam_Loitor->m_Width;
-    m_Height = m_Cam_Loitor->m_Height;
-    m_left_buff = new unsigned char[m_Width*m_Height];
-    m_right_buff = new unsigned char[m_Width*m_Height];
-
-
-    m_Cam_Loitor->m_Init();
-    m_Cam_Loitor->start();
+    int width, height, depth;
+    m_Cam_Loitor->m_Init( width, height, depth );
+    m_simgforshow = new SteroImage(width, height, depth);
 
     m_Show = new ShowThread(this);
+    connect( m_Show, SIGNAL(Signal_Show()), SLOT(m_Draw()) );
     m_Show->start();
 
     ui->setupUi(this);
@@ -34,31 +28,34 @@ MainWindow::MainWindow(QWidget *parent) :
 
 int MainWindow::m_Draw()
 {
-    QImage img_left( m_left_buff, m_Width, m_Height, QImage::Format_RGB888 );
-    ui->left->setPixmap( QPixmap::fromImage(
-                             img_left.scaled( ui->left->width(), ui->left->height()).rgbSwapped())
-                         );
+    m_showSpace->release();
+    std::cerr<<"S";
+    QImage img_left( m_simgforshow->m_right_data, m_simgforshow->m_Width, m_simgforshow->m_Height, QImage::Format_Indexed8 );
+    ui->left->setPixmap( QPixmap::fromImage(img_left, 0));
+    ui->left->show();
 
-    QImage img_right( m_right_buff, m_Width, m_Height, QImage::Format_RGB888 );
-    ui->right->setPixmap( QPixmap::fromImage(
-                             img_right.scaled( ui->right->width(), ui->right->height()).rgbSwapped())
-                         );
+    QImage img_right( m_simgforshow->m_right_data, m_simgforshow->m_Width, m_simgforshow->m_Height, QImage::Format_Indexed8 );
+    ui->right->setPixmap( QPixmap::fromImage(img_right,0));
+    ui->right->show();
+    m_grabSpace->release();
+
     return 0;
 }
 
+int MainWindow::m_Grab()
+{
+    m_Cam_Loitor->m_Grab( *m_simgforshow );
+}
+
+
 MainWindow::~MainWindow()
 {
-//    m_Cam_Loitor->wait();
-
     m_Show->wait();
 
     m_Cam_Loitor->m_Clear();
 
-    delete [] m_right_buff;
-    m_right_buff = NULL;
-
-    delete [] m_left_buff;
-    m_left_buff = NULL;
+    delete m_simgforshow;
+    m_simgforshow = NULL;
 
     delete m_grabSpace;
     m_grabSpace = NULL;
@@ -84,10 +81,11 @@ void ShowThread::run()
 {
     while(true)
     {
-        m_ui->m_showSpace->acquire();
-        std::cerr<<"C";
-//        m_ui->m_Draw();
-        m_ui->m_grabSpace->release();
+        m_ui->m_grabSpace->acquire();
+        std::cerr<<"G";
+        m_ui->m_Grab();
+        emit Signal_Show();
+        m_ui->m_showSpace->release();
     }
     std::cerr<<std::endl;
 }

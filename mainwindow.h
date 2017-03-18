@@ -6,6 +6,7 @@
 #include <QThread>
 #include <sys/time.h>
 
+class SteroImage;
 class CAMERA_LOITOR;
 class ShowThread;
 
@@ -21,14 +22,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    int m_Grab();
+
     QSemaphore *m_grabSpace;
     QSemaphore *m_showSpace;
 
-    timeval m_left_stamp,m_right_stamp;
-    uchar* m_left_buff;
-    uchar* m_right_buff;
-    int m_Width, m_Height;
-
+private slots:
     int m_Draw();
 
 private:
@@ -39,17 +38,23 @@ private:
 
     const int m_BufferSize;
 
+    SteroImage *m_simgforshow;
+
 };
 
-//// show
+// showthread
 class ShowThread : public QThread
 {
+    Q_OBJECT
 
 public:
     ShowThread(MainWindow* ui);
 
 protected:
     void run();
+
+signals:
+    void Signal_Show();
 
 private:
     MainWindow* m_ui;

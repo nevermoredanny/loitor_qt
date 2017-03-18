@@ -8,8 +8,7 @@
 
 #include "camera_loitor.h"
 
-CAMERA_LOITOR::CAMERA_LOITOR(MainWindow* ui) :
-    m_ui(ui),
+CAMERA_LOITOR::CAMERA_LOITOR() :
     m_Width(IMG_WIDTH_WVGA),
     m_Height(IMG_HEIGHT_WVGA)
 {
@@ -21,8 +20,12 @@ CAMERA_LOITOR::~CAMERA_LOITOR()
 
 }
 
-int CAMERA_LOITOR::m_Init()
+int CAMERA_LOITOR::m_Init( int &width, int &height, int &depth )
 {
+    width = m_Width;
+    height = m_Height;
+    depth = 1;
+
     /************************ Start Cameras ************************/
     QString str = QCoreApplication::applicationDirPath() + QString("/Loitor_VISensor_Setups.txt");
     QByteArray config = str.toLatin1();
@@ -55,14 +58,15 @@ int CAMERA_LOITOR::m_Init()
     qDebug("visensor_open_port success...\r\n");
     /************************ ************ ************************/
 
-//    CamThread cam;
-//    ShowThread show;
-//    cam.start();
-//    show.start();
-//    cam.wait();
-//    show.wait();
-
     return 0;
+}
+
+int CAMERA_LOITOR::m_Grab(SteroImage &simg)
+{
+    visensor_imudata paired_imu = visensor_get_stereoImg((char *)simg.m_left_data,
+                                                         (char *)simg.m_right_data,
+                                                                 simg.m_left_stamp,
+                                                                 simg.m_right_stamp);
 }
 
 int CAMERA_LOITOR::m_Clear()
@@ -76,17 +80,17 @@ int CAMERA_LOITOR::m_Clear()
     return 0;
 }
 
-void CAMERA_LOITOR::run()
-{
-    while(true)
-    {
-        m_ui->m_grabSpace->acquire();
-        std::cerr<<"P";
-        visensor_imudata paired_imu = visensor_get_stereoImg((char *)m_ui->m_left_buff,
-                                                             (char *)m_ui->m_right_buff,
-                                                             m_ui->m_left_stamp,
-                                                             m_ui->m_right_stamp);
-        m_ui->m_showSpace->release();
-    }
-    std::cerr<<std::endl;
-}
+//void CAMERA_LOITOR::run()
+//{
+//    while(true)
+//    {
+//        m_ui->m_grabSpace->acquire();
+//        std::cerr<<"P";
+//        visensor_imudata paired_imu = visensor_get_stereoImg((char *)m_ui->m_left_buff,
+//                                                             (char *)m_ui->m_right_buff,
+//                                                             m_ui->m_left_stamp,
+//                                                             m_ui->m_right_stamp);
+//        m_ui->m_showSpace->release();
+//    }
+//    std::cerr<<std::endl;
+//}

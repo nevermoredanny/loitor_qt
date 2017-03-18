@@ -1,7 +1,10 @@
 #include <QDebug>
 #include <QCoreApplication>
 
+#include <string>
 #include <iostream>
+#include <opencv2/core.hpp>
+#include <boost/thread.hpp>
 
 #include "loitorusbcam.h"
 #include "loitorimu.h"
@@ -67,6 +70,7 @@ int CAMERA_LOITOR::m_Grab(SteroImage &simg)
                                                          (char *)simg.m_right_data,
                                                                  simg.m_left_stamp,
                                                                  simg.m_right_stamp);
+    return 0;
 }
 
 int CAMERA_LOITOR::m_Clear()
@@ -79,18 +83,3 @@ int CAMERA_LOITOR::m_Clear()
 
     return 0;
 }
-
-//void CAMERA_LOITOR::run()
-//{
-//    while(true)
-//    {
-//        m_ui->m_grabSpace->acquire();
-//        std::cerr<<"P";
-//        visensor_imudata paired_imu = visensor_get_stereoImg((char *)m_ui->m_left_buff,
-//                                                             (char *)m_ui->m_right_buff,
-//                                                             m_ui->m_left_stamp,
-//                                                             m_ui->m_right_stamp);
-//        m_ui->m_showSpace->release();
-//    }
-//    std::cerr<<std::endl;
-//}

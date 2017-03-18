@@ -16,11 +16,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     camera_loitor.cpp \
-    clickablelabel.cpp
+    clickablelabel.cpp \
+    algprocess.cpp
 
 HEADERS  += mainwindow.h \
     camera_loitor.h \
-    clickablelabel.h
+    clickablelabel.h \
+    algprocess.h
 
 FORMS    += mainwindow.ui
 
@@ -32,5 +34,21 @@ LIBS +=  ../LOITOR_QT/third_parties/loitor/lib/libloitorimu.a
 LIBS += -lpthread
 LIBS += -lusb-1.0
 
-RESOURCES +=
+#opencv
+INCLUDEPATH += /usr/local/include/opencv \
+                /usr/local/include/opencv2
+LIBS += /usr/local/lib/libopencv_video.so  \
+        /usr/local/lib/libopencv_objdetect.so \
+        /usr/local/lib/libopencv_ml.so  \
+        /usr/local/lib/libopencv_core.so \
+        /usr/local/lib/libopencv_features2d.so  \
+        /usr/local/lib/libopencv_imgproc.so \
+        /usr/local/lib/libopencv_highgui.so \
+        /usr/local/lib/libopencv_flann.so   \
+        /usr/local/lib/libopencv_calib3d.so \
+        /usr/local/lib/libopencv_imgcodecs.so
 
+
+#boost
+LIBS += -lboost_thread \
+        -lboost_system

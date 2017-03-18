@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSemaphore>
 #include <QThread>
+#include <QMutex>
 #include <sys/time.h>
 
 class SteroImage;
@@ -22,24 +23,32 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    int m_Grab();
+    int m_Grab2Show();
 
-    QSemaphore *m_grabSpace;
+    int m_Grab2Save();
+
+    QSemaphore *m_grab2showSpace;
     QSemaphore *m_showSpace;
+    QSemaphore *m_saveSpace;
+//    QMutex memmutex;
 
 private slots:
-    int m_Draw();
+    void m_Show();
+    void m_Save();
+
+signals:
+    void Signal_Show();
 
 private:
     Ui::MainWindow *ui;
 
     CAMERA_LOITOR *m_Cam_Loitor;
-    ShowThread *m_Show;
+    ShowThread *m_ShowThread;
 
     const int m_BufferSize;
 
     SteroImage *m_simgforshow;
-
+    SteroImage *m_simgforsave;
 };
 
 // showthread
@@ -52,9 +61,6 @@ public:
 
 protected:
     void run();
-
-signals:
-    void Signal_Show();
 
 private:
     MainWindow* m_ui;

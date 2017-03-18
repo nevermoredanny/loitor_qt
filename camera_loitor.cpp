@@ -35,13 +35,13 @@ int CAMERA_LOITOR::m_Init( int &width, int &height, int &depth )
     visensor_load_settings( config.data() );
 
     // 手动设置相机参数
-    //visensor_set_current_mode(5);
-    //visensor_set_auto_EG(0);
-    //visensor_set_exposure(50);
-    //visensor_set_gain(200);
-    //visensor_set_cam_selection_mode(2);
-    //visensor_set_resolution(false);
-    //visensor_set_fps_mode(true);
+//    visensor_set_current_mode(5);
+//    visensor_set_auto_EG(0);
+//    visensor_set_exposure(50);
+//    visensor_set_gain(200);
+//    visensor_set_cam_selection_mode(2);
+//    visensor_set_resolution(false);
+//    visensor_set_fps_mode(true);
     // 保存相机参数到原配置文件
     //visensor_save_current_settings();
 

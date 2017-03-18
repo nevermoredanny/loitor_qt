@@ -99,9 +99,10 @@ int MainWindow::m_Grab2Show()
 
 MainWindow::~MainWindow()
 {
+    m_ShowThread->stop();
     m_ShowThread->wait();
-
-    m_Cam_Loitor->m_Clear();
+    delete m_ShowThread;
+    m_ShowThread = NULL;
 
     delete m_grab2showSpace;
     m_grab2showSpace = NULL;
@@ -115,23 +116,27 @@ MainWindow::~MainWindow()
     delete m_showSpace;
     m_showSpace = NULL;
 
-    delete m_ShowThread;
-    m_ShowThread = NULL;
-
+    m_Cam_Loitor->m_Clear();
     delete m_Cam_Loitor;
     m_Cam_Loitor = NULL;
 
     delete ui;
 }
 
-ShowThread::ShowThread( MainWindow* ui )
+ShowThread::ShowThread( MainWindow* ui ) :
+    flag(true)
 {
     m_ui = ui;
 }
 
+void ShowThread::stop()
+{
+    flag = false;
+}
+
 void ShowThread::run()
 {
-    while(true)
+    while(flag)
     {
         m_ui->m_Grab2Show();
     }

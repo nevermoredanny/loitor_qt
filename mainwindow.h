@@ -59,11 +59,14 @@ class ShowThread : public QThread
 public:
     ShowThread(MainWindow* ui);
 
+    void stop();
+
 protected:
     void run();
 
 private:
     MainWindow* m_ui;
+    bool flag;
 };
 
 

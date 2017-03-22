@@ -2,6 +2,7 @@
 #define CAMERA_LOITOR_H
 
 #include <sys/time.h>
+#include <QThread>
 
 class SteroImage
 {
@@ -37,8 +38,15 @@ public:
            this->m_Height != simg.m_Height ||
            this->m_Depth != simg.m_Depth )
         {
-            // err
-            return *this;
+            delete [] m_left_data;
+            m_left_data = NULL;
+
+            delete [] m_right_data;
+            m_right_data = NULL;
+
+            m_left_data = new unsigned char[simg.m_Width*simg.m_Height];
+            m_right_data = new unsigned char[simg.m_Width*simg.m_Height];
+
         }
 
         this->m_Width = simg.m_Width;
@@ -62,19 +70,47 @@ public:
     timeval m_right_stamp;
 };
 
-class CAMERA_LOITOR
+class CAMERA_LOITOR : public QThread
 {
+    Q_OBJECT
 
 public:
     CAMERA_LOITOR();
     ~CAMERA_LOITOR();
 
     int m_Init( int &width, int &height, int &depth );
+
+    int m_Open();
+
+    const SteroImage& m_GetSimg2Show();
+
+    const SteroImage& m_GetSimg2Process();
+
     int m_Grab( SteroImage& simg);
+
+    int m_Close();
+
     int m_Clear();
+
+protected:
+    void run();
 
     int m_Width;
     int m_Height;
+
+    bool m_Runnable;
+
+signals:
+    void grabbed();
+
+public:
+
+    static SteroImage m_Simg_Show;
+
+    static SteroImage m_Simg_Procee;
+
+    static int m_SaveOneTime( const char *left, const char *right );
+
 };
 
 #endif // CAMERA_LOITOR_H

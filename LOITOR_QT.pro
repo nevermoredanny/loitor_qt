@@ -17,12 +17,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     camera_loitor.cpp \
     clickablelabel.cpp \
-    algprocess.cpp
+    algprocess.cpp \
+    threadmanager.cpp
 
 HEADERS  += mainwindow.h \
     camera_loitor.h \
     clickablelabel.h \
-    algprocess.h
+    algprocess.h \
+    threadmanager.h
 
 FORMS    += mainwindow.ui
 

@@ -3,3 +3,5 @@
 #include <pthread.h>
 #include "camera_loitor.h"
 #include "algprocess.h"
+
+

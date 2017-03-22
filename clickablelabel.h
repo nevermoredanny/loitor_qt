@@ -11,7 +11,8 @@ public:
     explicit ClickableLabel( QWidget* parent=0 );
     ~ClickableLabel();
 signals:
-    void clicked();
+    void clicked_left();
+    void clicked_right();
 protected:
     void mousePressEvent(QMouseEvent* event);
 };

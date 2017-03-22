@@ -12,6 +12,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = LOITOR_QT
 TEMPLATE = app
 
+DESTDIR += bin
+UI_DIR += ui
+MOC_DIR += moc
+OBJECTS_DIR += obj
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -31,8 +35,8 @@ FORMS    += mainwindow.ui
 #loitor
 THIRD_PARTIES = ./third_parties
 INCLUDEPATH += $${THIRD_PARTIES}/loitor/include
-LIBS +=  ../LOITOR_QT/third_parties/loitor/lib/libloitorusbcam.a
-LIBS +=  ../LOITOR_QT/third_parties/loitor/lib/libloitorimu.a
+LIBS +=  ../../LOITOR_QT/third_parties/loitor/lib/libloitorusbcam.a
+LIBS +=  ../../LOITOR_QT/third_parties/loitor/lib/libloitorimu.a
 LIBS += -lpthread
 LIBS += -lusb-1.0
 
